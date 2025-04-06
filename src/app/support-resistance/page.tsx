@@ -9,6 +9,8 @@ function Page() {
     const [authCodeUrl,setAuthCodeUrl]=useState('')
     const [authorizationProcess,setAuthorizationProcess]=useState('')
     const [script, setScript] = useState('');
+    const [scripResult, setScripResult] = useState(null);
+    
 
     // useEffect(() => {
     //     const fetchToken = async () => {
@@ -57,6 +59,7 @@ function Page() {
         try {
           const res = await axiosInstance.get(`${API_URL}/get-script/${script}`);
           console.log('Response:', res.data);
+          setScripResult(res.data)
 
         } catch (error) {
           console.error('Error submitting:', error);
@@ -139,6 +142,14 @@ function Page() {
           Submit
         </button>
       </form>
+          {scripResult && scripResult?.image_url && (
+          <img
+            src={`http://localhost:8000${scripResult.image_url}`}
+            alt="Chart"
+            style={{ width: "100%", maxWidth: "600px" }}
+          />
+        )}
+
       </div>
     </div>
   );
