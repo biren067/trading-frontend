@@ -14,6 +14,7 @@ interface AuthState {
   userName: string | null;
   logout: () => void;
   refreshTokenFn: () => Promise<void>;
+  isLoggedIn: boolean | false;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -25,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter();
   const [userName, setUserName] = useState('')
   const [lastActivity, setLastActivity] = useState(Date.now());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -40,6 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { access, refresh } = response.data;
     setAccessToken(access);
     setRefreshToken(refresh);
+    setIsLoggedIn(true)
     console.log("Role is ::",response.data.user.role)
     setRole(response.data.user.role);
     setUserName(username)
@@ -106,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [lastActivity, refreshToken]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, refreshToken, role, login, logout, userName, refreshTokenFn: refreshTokenFn }}>
+    <AuthContext.Provider value={{ accessToken, refreshToken, role, login, logout, userName, refreshTokenFn: refreshTokenFn,isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
